@@ -9,6 +9,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.17.1",
+    "bluebird": "^3.5.1",
     "body-parser": "~1.15.1",
     "cloudinary": "^1.4.1",
     "connect-multiparty": "^2.0.0",
@@ -17,10 +19,12 @@
     "express": "~4.13.4",
     "lightrpc": "0.0.1",
     "limiter": "^1.1.0",
+    "lodash": "^4.17.4",
     "md5": "^2.2.1",
     "morgan": "~1.7.0",
     "raven": "^2.2.1",
     "redis": "^2.8.0",
-    "request": "^2.76.0"
+    "request": "^2.83.0",
+    "sharp": "^0.18.4"
   }
 }

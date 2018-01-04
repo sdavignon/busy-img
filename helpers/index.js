@@ -1,4 +1,16 @@
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 const md5 = require('md5');
+
+function getDefaultAvatar (username) {
+  const id = md5(username).charCodeAt(0) % 10;
+  return path.resolve(__dirname, `../img/${id}.png`);
+}
+
+function getDefaultCover () {
+  return path.resolve(__dirname, '../img/transparent.png');
+}
 
 const getAccountsAsync = (client, usernames) => new Promise((resolve, reject) => {
   client.send('get_accounts', [usernames], function(err, result) {
@@ -7,23 +19,20 @@ const getAccountsAsync = (client, usernames) => new Promise((resolve, reject) =>
   });
 });
 
-const getAvatarURL = (username) => {
-  switch (md5(username).charCodeAt(0) % 10) {
-    case 0: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/hv6vfwoxxrhbo5hqrr67.png';
-    case 1: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/odivdmixxlgcjzu5kwo5.png';
-    case 2: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/apwiydegsm9xkl8dwlg6.png';
-    case 3: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/a5z6ptacnxwtmlmiutru.png';
-    case 4: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948779/waualh2u8cin8rtntp3x.png';
-    case 5: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/ybg6j4rmwnfsp0lzpfew.png';
-    case 6: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948446/dprtnd1unvjknhjmppix.png';
-    case 7: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948447/tcpwoh6ej18rtd4bjsqa.png';
-    case 8: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948447/p72avlprkfariyti7q2l.png';
-    case 9: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948447/kmhouzmhi7nc2o2xcrsr.png';
-    default: return 'https://res.cloudinary.com/hpiynhbhq/image/upload/v1506948447/p72avlprkfariyti7q2l.png';
+function getFromMetadata (account, key) {
+  if (!account || !account.json_metadata) {
+    throw new Error('account or account.json_metadata is undefined.');
   }
-};
+
+  const metadata = _.attempt(JSON.parse, account.json_metadata);
+  if (_.isError(metadata)) throw metadata;
+
+  return _.get(metadata, key);
+}
 
 module.exports = {
-  getAvatarURL,
+  getDefaultAvatar,
+  getDefaultCover,
   getAccountsAsync,
+  getFromMetadata,
 };
