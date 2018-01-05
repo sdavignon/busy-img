@@ -12,6 +12,7 @@ const redisClient = redis.createClient(process.env.REDISCLOUD_URL);
 const client = createClient(process.env.STEEMJS_URL || 'https://api.steemit.com/', { timeout: 1500 });
 
 const EXPIRY_TIME = 30 * 60;
+const CACHE_MAX_AGE = 12 * 60 * 60;
 
 function sendDefaultAvatar(res, username) {
   return res.sendFile(getDefaultAvatar(username))
@@ -108,7 +109,7 @@ async function handleImageProxy(req, res) {
   
     const transformedImage = await transformImage(imageResponse.data, width, height);
   
-    res.setHeader('Cache-Control', `max-age=${EXPIRY_TIME}`);
+    res.setHeader('Cache-Control', `max-age=${CACHE_MAX_AGE}`);
     res.setHeader('Content-Type', 'image/jpeg')
     return res.send(transformedImage);
   } catch(err) {
