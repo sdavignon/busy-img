@@ -8,7 +8,7 @@ const debug = require('debug')('busy-img');
 const { getAvatarURL } = require('../helpers');
 
 steem.api.setOptions({
-  url: process.env.STEEMJS_URL || 'wss://steemd-int.steemit.com',
+  url: process.env.STEEMJS_URL || 'https://api.steemit.com',
 });
 
 const multipartMiddleware = multipart();
@@ -48,6 +48,9 @@ const renderExternalImage = (url, res, defaultImage, options) => {
     sign_url: true,
     secure: true,
     defaultImage,
+    fetch_format: 'auto',
+    flags: 'lossy',
+    quality: 'auto',
   });
   const newUrl = cloudinary.url(url, fetchOptions);
   return showImage(newUrl, res).catch(() => {
